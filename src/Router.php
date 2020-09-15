@@ -64,9 +64,6 @@ class Router implements RouterInterface
                 $vector [] = [$needle[0] => $uri[$i]];
             }
         }
-        if(!count($route)) {
-            return [];
-        }
         return $vector;
     }
 
