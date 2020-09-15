@@ -6,12 +6,11 @@ namespace AliensDev;
 
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Psr\Http\Message\ServerRequestInterface;
 
 interface RouterInterface
 {
 
-    public function match(ServerRequestInterface $request);
+    public function match(Request $request);
 
     public function addRoute(string $method, string $url, callable $callable);
 

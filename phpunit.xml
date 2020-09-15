@@ -1,0 +1,10 @@
+<phpunit>
+    <testsuites>
+        <testsuite name="TestMyRouterFeatures">
+            <directory>tests/Feature</directory>
+        </testsuite>
+        <testsuite name="TestMyRouterUnits">
+            <directory>tests/Unit</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

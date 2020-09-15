@@ -2,7 +2,9 @@
 
 namespace AliensDev;
 
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\ServerRequest;
 use Psr\Http\Message\ServerRequestInterface;
 use function GuzzleHttp\Psr7\str;
 use function Http\Response\send;
@@ -18,17 +20,15 @@ class Router implements RouterInterface
 
     /**
      * Match/Find the correspondent route
-     * @param ServerRequestInterface $request
+     * @param Request $request
      * @return mixed|null
      */
-    public function match(ServerRequestInterface $request)
+    public function match(Request $request)
     {
         $selectedRoute = null;
-        if($request->getUri()->getPath()[-1] == "/") {
-            $response = new Response("301",["location"=> substr($request->getUri()->getPath(), 0,-1)]);
-            send($response);
-        }
+
         foreach ($this->routes as $route) {
+            $route->setMatchUri($request->getUri()->getPath());
             if(strtolower($route->getMethod()) === strtolower($request->getMethod())) {
                 if($request->getUri()->getPath() === $route->getUrl()) {
                     return $route;
@@ -43,6 +43,7 @@ class Router implements RouterInterface
                         $route->setParams($vector);
                         return $route;
                     }
+
                 }
             }
         }
@@ -61,7 +62,7 @@ class Router implements RouterInterface
         for($i=0;$i<count($route);$i++) {
             if(strlen($route[$i]) > 0 && $route[$i][0] === '{') {
                 preg_match($regex, $route[$i],$needle);
-                $vector [] = [$needle[0] => $uri[$i]];
+                array_push($vector ,[$needle[0] => $uri[$i]]);
             }
         }
         return $vector;
@@ -89,10 +90,11 @@ class Router implements RouterInterface
     public function dispatch(Route $route): Response
     {
         $callback = $route->getCallable();
-        $response = call_user_func_array($callback,[$route->getParams()]);
+        $response = call_user_func_array($callback,$route->getParams());
         if(is_string($response)) {
             return new Response('200',[],$response);
         }
+        var_dump($response);
         return $response;
     }
 
