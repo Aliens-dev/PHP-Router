@@ -1,17 +1,22 @@
 <?php
 
 namespace AliensDev\Controllers;
+use GuzzleHttp\Psr7\Request;
+
 class HomeController
 {
-    public function index()
+    public function index(Request $request)
     {
         return "hello world";
     }
 
-    public function get($id,$index)
+    public function get(Request $request, $id)
     {
-        echo "<pre>";
-        var_dump($id['id']);
-        var_dump($index);
+        return "get";
+    }
+
+    public function in($request)
+    {
+        return "index";
     }
 }

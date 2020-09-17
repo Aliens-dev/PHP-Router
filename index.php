@@ -20,7 +20,7 @@ $router = new Router();
 $router->addRoute("GET","/",[HomeController::class, "index"]);
 $router->addRoute("GET","/blog",[HomeController::class, "index"]);
 $router->addRoute("GET","/blog/{id}",[HomeController::class, "get"]);
-$router->addRoute("GET","/blog/{id}/index/{index}",[HomeController::class, "get"]);
+$router->addRoute("GET","/blog/index",[HomeController::class, "in"]);
 
 
 // get The Correspondent Route
@@ -29,7 +29,7 @@ $route = $router->match($request);
 // Generate Response
 
 if(! is_null($route)) {
-    $response = $router->dispatch($route);
+    $response = $router->dispatch($route,$request);
 }else {
     $response = new Response(404,[],"Not Found!");
 }

@@ -25,8 +25,6 @@ class Router implements RouterInterface
      */
     public function match(Request $request)
     {
-        $selectedRoute = null;
-
         foreach ($this->routes as $route) {
             $route->setMatchUri($request->getUri()->getPath());
             if(strtolower($route->getMethod()) === strtolower($request->getMethod())) {
@@ -47,7 +45,7 @@ class Router implements RouterInterface
                 }
             }
         }
-        return $selectedRoute;
+        return null;
     }
 
     /**
@@ -62,7 +60,7 @@ class Router implements RouterInterface
         for($i=0;$i<count($route);$i++) {
             if(strlen($route[$i]) > 0 && $route[$i][0] === '{') {
                 preg_match($regex, $route[$i],$needle);
-                array_push($vector ,[$needle[0] => $uri[$i]]);
+                array_push($vector , $uri[$i]);
             }
         }
         return $vector;
@@ -85,12 +83,14 @@ class Router implements RouterInterface
     /**
      * dispatch a route to the corresponding callback
      * @param Route $route
+     * @param Request|null $request
      * @return Response
      */
-    public function dispatch(Route $route): Response
+    public function dispatch(Route $route, Request $request = null): Response
     {
         $callback = $route->getCallable();
-        $response = call_user_func_array($callback,$route->getParams());
+        $params =  array_merge([$request],$route->getParams());
+        $response = call_user_func_array($callback,$params);
         if(is_string($response)) {
             return new Response('200',[],$response);
         }
