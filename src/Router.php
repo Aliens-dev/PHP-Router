@@ -94,7 +94,6 @@ class Router implements RouterInterface
         if(is_string($response)) {
             return new Response('200',[],$response);
         }
-        var_dump($response);
         return $response;
     }
 
